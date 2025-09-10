@@ -22,7 +22,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: '/api/trpc',
+          url: process.env.NEXT_PUBLIC_VERCEL_URL
+            ? `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/trpc`
+            : 'http://localhost:3000/api/trpc',
           transformer: superjson,
           fetch(url, options) {
             return fetch(url, { ...options, credentials: 'include' })
