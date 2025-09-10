@@ -1,13 +1,13 @@
 import { initTRPC } from '@trpc/server'
 import superjson from 'superjson'
 import { cookies } from 'next/headers'
-import { db } from '@/server/db'
+import { getDb } from '@/server/db'
 import { NextRequest } from 'next/server'
 import crypto from 'node:crypto'
 
 export type Context = {
   userId: string
-  db: typeof db
+  db: ReturnType<typeof getDb>
   req?: NextRequest
 }
 
@@ -28,6 +28,7 @@ function getOrSetUserIdCookie() {
 
 export async function createContext(): Promise<Context> {
   const userId = getOrSetUserIdCookie()
+  const db = getDb()
   // Best-effort: ensure a corresponding User exists. If this is called in a
   // Server Component, DB writes are allowed, but we still keep this here for
   // API routes where it's critical. Failures will bubble as usual.
